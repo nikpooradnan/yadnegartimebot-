@@ -1,18 +1,17 @@
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+import os
+from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters
 
-TOKEN = "توکن_ربات_تو_اینجا"
+TOKEN = os.getenv("TOKEN")
 
-def start(update, context):
-    update.message.reply_text("ربات فعال شد!")
+async def start(update, context):
+    await update.message.reply_text("ربات فعال شد!")
 
-def echo(update, context):
-    update.message.reply_text(update.message.text)
+async def echo(update, context):
+    await update.message.reply_text(update.message.text)
 
-updater = Updater(TOKEN, use_context=True)
-dp = updater.dispatcher
+app = ApplicationBuilder().token(TOKEN).build()
 
-dp.add_handler(CommandHandler("start", start))
-dp.add_handler(MessageHandler(Filters.text, echo))
+app.add_handler(CommandHandler("start", start))
+app.add_handler(MessageHandler(filters.TEXT, echo))
 
-updater.start_polling()
-updater.idle()
+app.run_polling()
